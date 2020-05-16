@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
+    <!--angle spawnpoint pointcloud gltf object-pool ADCONTROLLER gamepad vive gearvr-->
+    	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>
+	<!--super hands-->	
+		<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+	  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+	  <script src="https://rawgit.com/wmurphyrd/aframe-super-hands-component/master/dist/super-hands.js"></script>
+			
+	<script type="text/javascript" src="aframe-pointcloud-component.js"></script><!-- ... -->
+	<script type="text/javascript" src="aframe-heightgrid-component.min.js"></script><!-- ... -->	
+	<script type="text/javascript" src="aframe-extras.misc.min.js"></script><!-- ... -->	
+
+	<script type="text/javascript" src="aframe-extras-controls.js"></script><!-- ... -->
+	<script type="text/javascript" src="aframe-extras-loaders.min.js"></script><!-- ... -->	
+	<script type="text/javascript" src="aframe-extras.min.js"></script><!-- ... -->	
+
+	
+
+	<script type="text/javascript" src="aframe-spawnpoint-component.js"></script><!-- ... -->
+	<script type="text/javascript" src="super-hands.min.js"></script><!-- ... -->	
+	<script type="text/javascript" src="aframe-select-bar-component.js"></script><!-- ... -->	
+
+
+	<script type="text/javascript" src="bundle.js"></script><!-- ... -->
+	<script type="text/javascript" src="script.js"></script><!-- ... -->	
+	<script type="text/javascript" src="aframe-inspector.min.js"></script><!-- ... -->
+	
+	<link rel="stylesheet" type="text/css" href="aframe.css">
+	
+	<script src="../../js/vendor/LegacyJSONLoader.js"></script>
+    <script src="components/aabb-collider.js"></script>
+    <script src="components/grab.js"></script>
+    <script src="components/ground.js"></script>
+    <script src="shaders/skyGradient.js"></script>
+    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
+  
+  <!--UI STUFF (menus and triggers) -->
+	<script src="aframe-mouse-cursor-component.js"></script>
+    <script src="oculus-touch-controls.js"></script>
+    <script src="vive-controls.js"></script>
+	<script src="thumb-controls.js"></script>
+    <script src="aframe-physics-system.js"></script>
+    <script src="aframe-gui.js"></script>
+	<script src="aframe-super-shooter-kit.js"></script>
+    <script src="aframe-super-keyboard.js"></script>
+	<!--  -->
+    <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
+	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+			  
+  	</head>
+	  <body>
+	  <script>
+	 /* global Ammo */
+const CONSTRAINT = require("../constants").CONSTRAINT;
+
+module.exports = AFRAME.registerComponent("ammo-constraint", {
+  multiple: true,
+
+  schema: {
+    // Type of constraint.
+    type: {
+      default: CONSTRAINT.HINGE,
+      oneOf: [
+        CONSTRAINT.LOCK,
+        CONSTRAINT.FIXED,
+        CONSTRAINT.SPRING,
+        CONSTRAINT.SLIDER,
+        CONSTRAINT.HINGE,
+        CONSTRAINT.CONE_TWIST,
+        CONSTRAINT.POINT_TO_POINT
+      ]
+    },
+
+    // Target (other) body for the constraint.
+    target: { type: "selector" },
+
+    // Offset of the hinge or point-to-point constraint, defined locally in the body. Used for hinge, coneTwist pointToPoint constraints.
+    pivot: { type: "vec3" },
+    targetPivot: { type: "vec3" },
+
+    // An axis that each body can rotate around, defined locally to that body. Used for hinge constraints.
+    axis: { type: "vec3", default: { x: 0, y: 0, z: 1 } },
+    targetAxis: { type: "vec3", default: { x: 0, y: 0, z: 1 } }
+  },
+
+  init: function() {
+    this.system = this.el.sceneEl.systems.physics;
+    this.constraint = null;
+  },
+
+  remove: function() {
+    if (!this.constraint) return;
+
+    this.system.removeConstraint(this.constraint);
+    this.constraint = null;
+  },
+
+  update: function() {
+    const el = this.el,
+      data = this.data;
+
+    this.remove();
+
+    if (!el.body || !data.target.body) {
+      (el.body ? data.target : el).addEventListener("body-loaded", this.update.bind(this, {}), { once: true });
+      return;
+    }
+
+    this.constraint = this.createConstraint();
+    this.system.addConstraint(this.constraint);
+  },
+
+  /**
+   * @return {Ammo.btTypedConstraint}
+   */
+  createConstraint: function() {
+    let constraint;
+    const data = this.data,
+      body = this.el.body,
+      targetBody = data.target.body;
+
+    const bodyTransform = body
+      .getCenterOfMassTransform()
+      .inverse()
+      .op_mul(targetBody.getWorldTransform());
+    const targetTransform = new Ammo.btTransform();
+    targetTransform.setIdentity();
+
+    switch (data.type) {
+      case CONSTRAINT.LOCK: {
+        constraint = new Ammo.btGeneric6DofConstraint(body, targetBody, bodyTransform, targetTransform, true);
+        const zero = new Ammo.btVector3(0, 0, 0);
+        //TODO: allow these to be configurable
+        constraint.setLinearLowerLimit(zero);
+        constraint.setLinearUpperLimit(zero);
+        constraint.setAngularLowerLimit(zero);
+        constraint.setAngularUpperLimit(zero);
+        Ammo.destroy(zero);
+        break;
+      }
+      //TODO: test and verify all other constraint types
+      case CONSTRAINT.FIXED: {
+        //btFixedConstraint does not seem to debug render
+        bodyTransform.setRotation(body.getWorldTransform().getRotation());
+        targetTransform.setRotation(targetBody.getWorldTransform().getRotation());
+        constraint = new Ammo.btFixedConstraint(body, targetBody, bodyTransform, targetTransform);
+        break;
+      }
+      case CONSTRAINT.SPRING: {
+        constraint = new Ammo.btGeneric6DofSpringConstraint(body, targetBody, bodyTransform, targetTransform, true);
+        //TODO: enableSpring, setStiffness and setDamping
+        break;
+      }
+      case CONSTRAINT.SLIDER: {
+        //TODO: support setting linear and angular limits
+        constraint = new Ammo.btSliderConstraint(body, targetBody, bodyTransform, targetTransform, true);
+        constraint.setLowerLinLimit(-1);
+        constraint.setUpperLinLimit(1);
+        // constraint.setLowerAngLimit();
+        // constraint.setUpperAngLimit();
+        break;
+      }
+      case CONSTRAINT.HINGE: {
+        const pivot = new Ammo.btVector3(data.pivot.x, data.pivot.y, data.pivot.z);
+        const targetPivot = new Ammo.btVector3(data.targetPivot.x, data.targetPivot.y, data.targetPivot.z);
+
+        const axis = new Ammo.btVector3(data.axis.x, data.axis.y, data.axis.z);
+        const targetAxis = new Ammo.btVector3(data.targetAxis.x, data.targetAxis.y, data.targetAxis.z);
+
+        constraint = new Ammo.btHingeConstraint(body, targetBody, pivot, targetPivot, axis, targetAxis, true);
+
+        Ammo.destroy(pivot);
+        Ammo.destroy(targetPivot);
+        Ammo.destroy(axis);
+        Ammo.destroy(targetAxis);
+        break;
+      }
+      case CONSTRAINT.CONE_TWIST: {
+        const pivotTransform = new Ammo.btTransform();
+        pivotTransform.setIdentity();
+        pivotTransform.getOrigin().setValue(data.targetPivot.x, data.targetPivot.y, data.targetPivot.z);
+        constraint = new Ammo.btConeTwistConstraint(body, pivotTransform);
+        Ammo.destroy(pivotTransform);
+        break;
+      }
+      case CONSTRAINT.POINT_TO_POINT: {
+        const pivot = new Ammo.btVector3(data.pivot.x, data.pivot.y, data.pivot.z);
+        const targetPivot = new Ammo.btVector3(data.targetPivot.x, data.targetPivot.y, data.targetPivot.z);
+
+        constraint = new Ammo.btPoint2PointConstraint(body, targetBody, pivot, targetPivot);
+
+        Ammo.destroy(pivot);
+        Ammo.destroy(targetPivot);
+        break;
+      }
+      default:
+        throw new Error("[constraint] Unexpected type: " + data.type);
+    }
+
+    Ammo.destroy(bodyTransform);
+    Ammo.destroy(targetTransform);
+
+    return constraint;
+  }
+});
+
+	  
+	  
+	  </script>
+	    <a-scene>
+            <!--Build our background and our floor-->
+            <a-plane static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4"></a-plane>
+            <a-sky color="#ECECEC"></a-sky>
+			
+			<asets>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin></a-mixin>
+				<a-mixin id="cube"
+                 event-set__grab="material.color: #FFEF4F"
+                 event-set__grabend="material.color: #F2E646"
+                 event-set__hit="material.color: #F2E646"
+                 event-set__hitend="material.color: #EF2D5E"
+                 event-set__mousedown="material.color: #FFEF4F"
+                 event-set__mouseenter="material.color: #F2E646"
+                 event-set__mouseleave="material.color: #EF2D5E"
+                 event-set__mouseup="material.color: #F2E646"
+                 geometry="primitive: box; height: 0.30; width: 0.30; depth: 0.30"
+                 material="color: #EF2D5E;"></a-mixin>
+					
+				<a-asset-item id="b1" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b1.glb" clickable grabbable stretchable draggable droppable drag-droppable></a-asset-item>
+				<a-asset-item id="b2" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b2.glb" clickable grabbable stretchable draggable droppable drag-droppable ></a-asset-item>
+				<a-asset-item id="b3" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@74dff725bf286207945e666fbfa4930dd9a0d071/b3.glb" clickable grabbable stretchable draggable droppable drag-droppable ></a-asset-item>
+				<a-asset-item id="b4" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b4.glb" clickable></a-asset-item>
+							
+			</asets>
+			
+			<a-entity gltf-model="#b1" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab></a-entity>
+			<a-entity gltf-model="#b2" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab ></a-entity>
+			<a-entity gltf-model="#b3" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab></a-entity>
+			<a-entity gltf-model="#b4" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1"></a-entity>
+
+			
+			<!--<a-entity position="0 30 -0.5">
+		        <a-plane width="50" height="50">
+					<a-gui-cursor></a-gui-cursor>
+					<a-gui-button></a-gui-button>
+					<a-gui-icon-button></a-gui-icon-button>	
+					<a-gui-icon-label-button></a-gui-icon-label-button>
+					<a-gui-radio></a-gui-radio>
+					<a-gui-toggle></a-gui-toggle>
+					<a-gui-slider></a-gui-slider>	
+					<a-gui-input></a-gui-input>
+					<a-gui-label></a-gui-label>
+					<a-gui-progress-bar></a-gui-progress-bar>
+					<a-gui-circle-loader></a-gui-circle-loader>
+					<a-gui-circle-timer></a-gui-circle-timer>
+				</a-plane>
+			</a-entity>
+        <!-- Environment --
+        <a-entity id="sky"
+                  geometry="primitive: sphere; radius: 65;"
+                  material="shader: skyGradient; colorTop: #353449; colorBottom: #BC483E; side: back"></a-entity>
+         <a-entity ground></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.2; distance: 0" position="8 10 18"></a-entity>
+         <a-entity light="type: point; color: #f4f4f4; intensity: 0.6; distance: 0" position="-8 10 -18"></a-entity>
+         <a-entity light="type: ambient; color: #f4f4f4; intensity: 0.4;" position="-8 10 -18"></a-entity>
+      </a-entity>
+      <!-- Hands --
+      <a-entity hand-controls="left" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity hand-controls="right" aabb-collider="objects: .cube;" grab></a-entity>
+      <a-entity position="0 1.6 2" camera look-controls wasd-controls></a-entity>
+		<!---->	<a-entity laser-controls raycaster="hand: left; objects: .links; far: 5"></a-entity>
+			<!--
+			
+            <a-entity id="planeset" position="2 2 2" dynamic-body>
+				<a-plane id="con1" static-body position="0 0 0" rotation="-90 0 0" color="#4CC3D9"
+				
+				>
+					<a-plane id="con2" dynamic-body position="0 1.5 0" rotation="0 0 0" color="#4CC911"
+					constraint="type pointTopoint;
+					target: #con1
+					targetAxis: 0 1 0"
+					></a-plane>
+				</a-plane>
+			</a-entity><!-- use constraint mixins --
+            
+			<a-entity>
+		      <a-entity sphere-collider="objects: a-box" super-hands hand-controls="left"></a-entity>
+		      <a-entity sphere-collider="objects: a-box" super-hands hand-controls="right"></a-entity>
+		    </a-entity>
+		    <!-- hover & drag-drop won't have any obvious effect without some additional event handlers or components. See the examples page for more -->
+		    <a-box dynamic-body position="-9 5 9" color="red" mass="2" hoverable clickable grabbable stretchable draggable droppable
+             onclick="ammo-constraint(this)"
+             ondragstart="paintBall(event)"
+             ondragend="unPaintBall(event)"
+             ondrop="event.relatedTarget.setAttribute('color', this.getAttribute('color'))">
+        
+      		</a-box>
+			
+            <!--Build three obstacles as static bodies so we can stand on them--
+            <a-box dynamic-body position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"
+			clickable
+			draggable
+			droppable
+			drag-droppable
+			hoverable
+			grabbable
+			stretchable
+			></a-box>-->
+            <a-cylinder dynamic-body position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+            
+            <!--Build one dynamic body - a soccer ball we can play with--
+            <a-sphere id="theball" dynamic-body position="4 1.25 -5" radius="0.5" color="tomato" mass="1"></a-sphere>
+            
+			<a-entity tracked-controls="controller: 0; idPrefix: OpenVR"></a-entity>
+
+			
+            <!--Make a player/camera entity, and give it the attributes we need it to have in order control camera with mouse, movement with WASD, and jump with spacebar-->
+           <!-- <a-entity class="player" id="player"
+                camera
+                jump-ability
+				universal-controls
+                tracked-controls="controller: 0; idPrefix: OpenVR"
+				hand-controls
+				kinematic-body
+                position="1 4 2">
+            </a-entity>--
+			
+			<a-gui-flex-container 
+				flex-direction="column" justify-content="center" align-items="normal" component-padding="0.1" opacity="0.7" width="3.5" height="4.5"
+				position="0 4 -45" rotation="0 0 0"
+			>
+				<!--<a-gui-label 
+				width="2.5" height="0.75"
+				value="TITLE"
+				font-family="Arial"
+				margin="0 0 0.05 0"
+				>
+				</a-gui-label>--
+				<a-gui-icon-button
+					height="0.75"
+					onclick="btGeneric6DofSpringConstraint()"
+					icon="social-twitter"
+					margin="0 0 0.05 0"
+				>
+				</a-gui-icon-button>
+				<a-gui-icon-label-button
+					width="2.5" height="0.75"
+					onclick="buttonActionFunction"
+					icon="social-github"
+					value="label button"
+					font-family="Arial"
+					margin="0 0 0.05 0"
+				>
+				</a-gui-icon-label-button>
+				<!--<a-gui-input id="test_input"
+					     width="2.5" height="0.75"
+					     onclick="testInputAction"
+					     value="Starting value"
+					     font-size="160px"
+					     font-color="#212121"
+					     border-color="#212121"
+					     border-hover-color="#424242"
+					     background-color="#FAFAFA"
+					     hover-color="#F5F5F5"
+					     active-color="#FFEB3B"
+					>
+					</a-gui-input>--
+					<a-gui-slider 	
+					width="2.5" height="0.75"
+					onclick="slideActionFunction"
+					percent="0.29"
+					margin="0 0 0.05 0"
+					>
+					</a-gui-slider>
+					<a-gui-radio 
+						width="2.5" height="0.75"
+						onclick="toggleActionFunction"
+						value="label radio"
+						font-family="Arial"
+						margin="0 0 0.05 0"
+					>
+					</a-gui-radio>
+								<a-gui-toggle
+					width="2.5" height="0.75"
+					onclick="testToggleAction"
+					value="label toggle"
+					font-family="Arial"
+					margin="0 0 0.05 0"
+				>
+				</a-gui-toggle>
+			</a-gui-flex-container>
+			<!-- Camera + cursor. -->
+				<a-entity id="cameraRig" position="0 1.6 0">
+					<a-camera look-controls wasd-controls position="0 0 0">
+						<a-gui-cursor id="cursor"
+								  raycaster="objects: [gui-interactable]"
+								  fuse="true" fuse-timeout="2000"
+								  design="ring"
+						>
+						</a-gui-cursor> <!-- /cursor -->
+					</a-camera> <!-- /camera -->
+				</a-entity>
+        </a-scene>
+	  </body>
+    <script type="text/javascript" src="script.js"></script><!-- ... -->
+	<script type="text/javascript" src="ammcon.js"></script><!-- ... -->
+	<script type="text/javascript" src="bundle.js"></script><!-- ... -->
+</html>
