@@ -293,21 +293,10 @@ module.exports = AFRAME.registerComponent("ammo-constraint", {
 				</a-plane>
 			</a-entity><!-- use constraint mixins --
             
-			<a-entity>
-		      <a-entity sphere-collider="objects: a-box" super-hands hand-controls="left"></a-entity>
-		      <a-entity sphere-collider="objects: a-box" super-hands hand-controls="right"></a-entity>
-		    </a-entity>
-		    <!-- hover & drag-drop won't have any obvious effect without some additional event handlers or components. See the examples page for more -->
-		    <a-box dynamic-body position="-9 5 9" color="red" mass="2" hoverable clickable grabbable stretchable draggable droppable
-             onclick="ammo-constraint(this)"
-             ondragstart="paintBall(event)"
-             ondragend="unPaintBall(event)"
-             ondrop="event.relatedTarget.setAttribute('color', this.getAttribute('color'))">
-        
-      		</a-box>
 			
-            <!--Build three obstacles as static bodies so we can stand on them--
-            <a-box dynamic-body position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"
+			-->
+            <!--Build three obstacles as static bodies so we can stand on them-->
+            <a-box dynamic-body position="-2 7 0" rotation="0 45 0" color="#4CC3D9"
 			clickable
 			draggable
 			droppable
@@ -316,10 +305,10 @@ module.exports = AFRAME.registerComponent("ammo-constraint", {
 			grabbable
 			stretchable
 			></a-box>-->
-            <a-cylinder dynamic-body position="1 0.75 -3" radius="0.5" height="1.5" color="#FFC65D"></a-cylinder>
+            <a-cylinder dynamic-body position="'3 5 0" radius="2.5" height="5" color="#FFC65D"></a-cylinder>
             
-            <!--Build one dynamic body - a soccer ball we can play with--
-            <a-sphere id="theball" dynamic-body position="4 1.25 -5" radius="0.5" color="tomato" mass="1"></a-sphere>
+            <!--Build one dynamic body - a soccer ball we can play with-->
+            <a-sphere id="theball" dynamic-body position="-3 6 0" radius="2.5" color="tomato" mass="1"></a-sphere>
             
 			<a-entity tracked-controls="controller: 0; idPrefix: OpenVR"></a-entity>
 
@@ -335,70 +324,7 @@ module.exports = AFRAME.registerComponent("ammo-constraint", {
                 position="1 4 2">
             </a-entity>--
 			
-			<a-gui-flex-container 
-				flex-direction="column" justify-content="center" align-items="normal" component-padding="0.1" opacity="0.7" width="3.5" height="4.5"
-				position="0 4 -45" rotation="0 0 0"
-			>
-				<!--<a-gui-label 
-				width="2.5" height="0.75"
-				value="TITLE"
-				font-family="Arial"
-				margin="0 0 0.05 0"
-				>
-				</a-gui-label>--
-				<a-gui-icon-button
-					height="0.75"
-					onclick="btGeneric6DofSpringConstraint()"
-					icon="social-twitter"
-					margin="0 0 0.05 0"
-				>
-				</a-gui-icon-button>
-				<a-gui-icon-label-button
-					width="2.5" height="0.75"
-					onclick="buttonActionFunction"
-					icon="social-github"
-					value="label button"
-					font-family="Arial"
-					margin="0 0 0.05 0"
-				>
-				</a-gui-icon-label-button>
-				<!--<a-gui-input id="test_input"
-					     width="2.5" height="0.75"
-					     onclick="testInputAction"
-					     value="Starting value"
-					     font-size="160px"
-					     font-color="#212121"
-					     border-color="#212121"
-					     border-hover-color="#424242"
-					     background-color="#FAFAFA"
-					     hover-color="#F5F5F5"
-					     active-color="#FFEB3B"
-					>
-					</a-gui-input>--
-					<a-gui-slider 	
-					width="2.5" height="0.75"
-					onclick="slideActionFunction"
-					percent="0.29"
-					margin="0 0 0.05 0"
-					>
-					</a-gui-slider>
-					<a-gui-radio 
-						width="2.5" height="0.75"
-						onclick="toggleActionFunction"
-						value="label radio"
-						font-family="Arial"
-						margin="0 0 0.05 0"
-					>
-					</a-gui-radio>
-								<a-gui-toggle
-					width="2.5" height="0.75"
-					onclick="testToggleAction"
-					value="label toggle"
-					font-family="Arial"
-					margin="0 0 0.05 0"
-				>
-				</a-gui-toggle>
-			</a-gui-flex-container>
+			
 			<!-- Camera + cursor. -->
 				<a-entity id="cameraRig" position="0 1.6 0">
 					<a-camera look-controls wasd-controls position="0 0 0">
