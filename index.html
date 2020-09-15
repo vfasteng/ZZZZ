@@ -50,41 +50,32 @@
 	<!--  -->
     <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
 	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
-			  
+			  <!--new-->
+	  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
+<script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
+<script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
+<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/random-color.js"></script>
+<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/snap.js"></script>
+<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/intersection-spawn.js"></script>
+		  <!--new-->
   	</head>
 	  <body>
-	  
+		  
 	    <a-scene>
             <!--Build our background and our floor-->
             <a-plane static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4"></a-plane>
             <a-sky color="#ECECEC"></a-sky>
 			
-			<a-assets>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin></a-mixin>
-				<a-mixin id="cube"
-                 event-set__grab="material.color: #FFEF4F"
-                 event-set__grabend="material.color: #F2E646"
-                 event-set__hit="material.color: #F2E646"
-                 event-set__hitend="material.color: #EF2D5E"
-                 event-set__mousedown="material.color: #FFEF4F"
-                 event-set__mouseenter="material.color: #F2E646"
-                 event-set__mouseleave="material.color: #EF2D5E"
-                 event-set__mouseup="material.color: #F2E646"
-                 geometry="primitive: box; height: 0.30; width: 0.30; depth: 0.30"
-                 material="color: #EF2D5E;"></a-mixin>
-					
-				<a-asset-item id="b1" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b1.glb" clickable grabbable stretchable draggable droppable drag-droppable></a-asset-item>
-				<a-asset-item id="b2" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b2.glb" clickable grabbable stretchable draggable droppable drag-droppable ></a-asset-item>
-				<a-asset-item id="b3" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@74dff725bf286207945e666fbfa4930dd9a0d071/b3.glb" clickable grabbable stretchable draggable droppable drag-droppable ></a-asset-item>
-				<a-asset-item id="b4" src="https://cdn.jsdelivr.net/gh/vfasteng/glb_models@e0ea581d4a9615c05b7818c67240c9ed3696970e/b4.glb" clickable></a-asset-item>
-							
-			</a-assets>
+<a-assets>
+	<img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
+      <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
+      <a-mixin id="voxel"
+         geometry="primitive: box; height: 0.5; width: 0.5; depth: 0.5"
+         material="shader: standard"
+         random-color
+         snap="offset: 0.25 0.25 0.25; snap: 0.5 0.5 0.5"
+      ></a-mixin>
+</a-assets>
 			
 			<a-entity gltf-model="#b1" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab></a-entity>
 			<a-entity gltf-model="#b2" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab ></a-entity>
@@ -138,7 +129,7 @@
             
 			
 			-->
-            <!--Build three obstacles as static bodies so we can stand on them-->
+            <!--Build three obstacles as static bodies so we can stand on them--
             <a-box dynamic-body position="-2 7 0" rotation="0 45 0" color="#4CC3D9" scale="5 5 5"
 			clickable
 			draggable
@@ -147,10 +138,10 @@
 			hoverable
 			grabbable
 			stretchable
-			></a-box>-->
+			></a-box>--
             <a-cylinder static-body position="'3 5 0" radius="2.5" height="5" color="#FFC65D"></a-cylinder>
             
-            <!--Build one dynamic body - a soccer ball we can play with-->
+            <!--Build one dynamic body - a soccer ball we can play with--
             <a-sphere id="theball" dynamic-body position="-3 6 0" radius="2.5" color="tomato" mass="1"></a-sphere>
             
 			<a-entity tracked-controls="controller: 0; idPrefix: OpenVR"></a-entity>
@@ -167,8 +158,15 @@
                 position="1 4 2">
             </a-entity>--
 			
-			
-			<!-- Camera + cursor. -->
+			<!-- Hands. -->
+    <a-entity id="teleHand" hand-controls="left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
+    <a-entity id="blockHand" hand-controls="right" controller-cursor intersection-spawn="event: click; mixin: voxel"></a-entity>
+
+    <!-- Camera. -->
+    <a-camera>
+      <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
+    </a-camera>
+			<!-- Camera + cursor.--
 				<a-entity id="cameraRig" position="0 1.6 0">
 					<a-camera look-controls wasd-controls position="0 0 0">
 						<a-gui-cursor id="cursor"
@@ -178,7 +176,7 @@
 						>
 						</a-gui-cursor> <!-- /cursor -->
 					</a-camera> <!-- /camera -->
-				</a-entity>
+				</a-entity>-->
         </a-scene>
 	  </body>
     <script type="text/javascript" src="script.js"></script><!-- ... -->
