@@ -50,38 +50,41 @@
 	<!--  -->
     <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
 	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
-			  <!--new-->
-	  <script src="https://aframe.io/releases/0.5.0/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-teleport-controls@0.2.x/dist/aframe-teleport-controls.min.js"></script>
-<script src="https://unpkg.com/aframe-controller-cursor-component@0.2.x/dist/aframe-controller-cursor-component.min.js"></script>
-<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/random-color.js"></script>
-<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/snap.js"></script>
-<script src="https://rawgit.com/ngokevin/kframe/csstricks/scenes/aincraft/components/intersection-spawn.js"></script>
-		  <!--new-->
+			  
   	</head>
 	  <body>
-		  
+	  
 	    <a-scene>
             <!--Build our background and our floor-->
-            <a-plane static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" color="#7BC8A4"></a-plane>
+            <a-plane src="#floored" static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" ></a-plane>
             <a-sky color="#ECECEC"></a-sky>
 			
-<a-assets>
-	<img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg">
-      <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg">
-      <a-mixin id="voxel"
-         geometry="primitive: box; height: 0.5; width: 0.5; depth: 0.5"
-         material="shader: standard"
-         random-color
-         snap="offset: 0.25 0.25 0.25; snap: 0.5 0.5 0.5"
-      ></a-mixin>
-</a-assets>
+			<a-assets>
+				<img id="floored" src="floored.PNG"></img>
+				<a-mixin id="cube" geometry="primitive: box; width: 1.0; height: 1.0; depth: 1.0"
+                     hoverable grabbable stretchable draggable droppable
+                     event-set__hoveron="_event: hover-start; material.opacity: 0.7; transparent: true"
+                     event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
+                     dynamic-body shadow click-impulse>
+	            </a-mixin>
+	            <a-mixin id="controller" super-hands="colliderEvent: collisions;
+	                              colliderEventProperty: els;
+	                              colliderEndEvent: collisions;
+	                              colliderEndEventProperty: clearedEls;
+	                              grabStartButtons: gripdown, pointdown, triggerdown;
+	                              grabEndButtons: gripup, pointup, triggerup" static-body="shape: sphere; sphereRadius: 0.11" oculus-touch-controls="hand: left" physics-collider collision-filter="collidesWith: default;" collisionForces="false" onclick="click-impulse: true">
+				</a-mixin>
+		  
+			    <a-mixin id="red" material="color: red"></a-mixin>
+			    <a-mixin id="blue" material="color: blue"></a-mixin>
+			    <a-mixin id="cube" geometry="primitive: box"></a-mixin>
+				<a-mixin id="g01" src="assets/g01.glb"></a-mixin>
+			    <a-mixin id="constraint" material="color: blue"></a-mixin>
+			    <a-mixin id="weight" mass="2.0"></a-mixin>
+				
+			</a-assets>
 			
-			<a-entity gltf-model="#b1" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab></a-entity>
-			<a-entity gltf-model="#b2" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab ></a-entity>
-			<a-entity gltf-model="#b3" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1" grab></a-entity>
-			<a-entity gltf-model="#b4" static-body="shape: box; mass: 2" position="0 5 0" rotation="0 0 0" scale="0.1 0.1 0.1"></a-entity>
-
+			
 			
 			<!--<a-entity position="0 30 -0.5">
 		        <a-plane width="50" height="50">
@@ -125,12 +128,41 @@
 					targetAxis: 0 1 0"
 					></a-plane>
 				</a-plane>
-			</a-entity><!-- use constraint mixins --
+			</a-entity><!-- use constraint mixins -->
             
+			<!-- HINGE PIN working with 2 z-axis wheels-->
+        <a-entity position="0 5 -5">
+
+            <a-cylinder id="hinge3-target" position="0 0.1 0 " color="#777" static-body radius="0.5" height="0.1">
+
+            </a-cylinder>
+            <a-entity id="c11" class="cube" mixin="cube" position="0 0 0" material="color: yellow"
+                      constraint="type: hinge;
+                           target: #hinge3-target;
+                           axis: 0 1 0;
+                           targetAxis: 0 1 0;
+                           pivot: 0 0.1 0;
+                           targetPivot: 0 -0.5 0;"></a-entity>
+							   <a-entity class="cube" mixin="cube" position="0 0 0" material="color: yellow"
+	                      constraint="type: hinge;
+	                           target: #c11;
+	                           axis: 0 0 1;
+	                           targetAxis: 0 0 1;
+	                           pivot: 0 0 0;
+	                           targetPivot: 0 0 1.0"></a-entity>
+								   	<a-entity class="cube" mixin="cube" position="0 0 0" material="color: yellow"
+		                      constraint="type: hinge;
+		                           target: #c11;
+		                           axis: 0 0 1;
+		                           targetAxis: 0 0 1;
+		                           pivot: 0 0 0;
+		                           targetPivot: 0 0 -1.0"></a-entity>
+		        </a-entity>
+	        </a-entity>
+        </a-entity>
 			
-			-->
-            <!--Build three obstacles as static bodies so we can stand on them--
-            <a-box dynamic-body position="-2 7 0" rotation="0 45 0" color="#4CC3D9" scale="5 5 5"
+            <!--Build three obstacles as static bodies so we can stand on them-->
+            <a-box dynamic-body position="-2 7 0" rotation="30 45 30" color="#4CC3D9" scale="5 5 5"
 			clickable
 			draggable
 			droppable
@@ -138,35 +170,29 @@
 			hoverable
 			grabbable
 			stretchable
-			></a-box>--
-            <a-cylinder static-body position="'3 5 0" radius="2.5" height="5" color="#FFC65D"></a-cylinder>
+			></a-box>
+            <a-cylinder dynamic-body position="'-3 -5 -3" radius="2.5" height="5" color="#FFC65D"></a-cylinder>
             
-            <!--Build one dynamic body - a soccer ball we can play with--
-            <a-sphere id="theball" dynamic-body position="-3 6 0" radius="2.5" color="tomato" mass="1"></a-sphere>
+            <!--Build one dynamic body - a soccer ball we can play with-->
+            <a-sphere id="theball" dynamic-body position="-3 3 0" radius="2.5" color="tomato" mass="1"></a-sphere>
             
 			<a-entity tracked-controls="controller: 0; idPrefix: OpenVR"></a-entity>
 
 			
             <!--Make a player/camera entity, and give it the attributes we need it to have in order control camera with mouse, movement with WASD, and jump with spacebar-->
-           <!-- <a-entity class="player" id="player"
+           <a-entity class="player" id="player"
                 camera
+				look-controls
                 jump-ability
 				universal-controls
                 tracked-controls="controller: 0; idPrefix: OpenVR"
 				hand-controls
 				kinematic-body
                 position="1 4 2">
-            </a-entity>--
+            </a-entity>
 			
-			<!-- Hands. -->
-    <a-entity id="teleHand" hand-controls="left" teleport-controls="type: parabolic; collisionEntities: [mixin='voxel'], #ground"></a-entity>
-    <a-entity id="blockHand" hand-controls="right" controller-cursor intersection-spawn="event: click; mixin: voxel"></a-entity>
-
-    <!-- Camera. -->
-    <a-camera>
-      <a-cursor intersection-spawn="event: click; mixin: voxel"></a-cursor>
-    </a-camera>
-			<!-- Camera + cursor.--
+			
+			<!-- Camera + cursor. --
 				<a-entity id="cameraRig" position="0 1.6 0">
 					<a-camera look-controls wasd-controls position="0 0 0">
 						<a-gui-cursor id="cursor"
@@ -174,12 +200,12 @@
 								  fuse="true" fuse-timeout="2000"
 								  design="ring"
 						>
-						</a-gui-cursor> <!-- /cursor -->
-					</a-camera> <!-- /camera -->
+						</a-gui-cursor> <!-- /cursor --
+					</a-camera> <!-- /camera --
 				</a-entity>-->
         </a-scene>
 	  </body>
     <script type="text/javascript" src="script.js"></script><!-- ... -->
-	<script type="text/javascript" src="ammcon.js"></script><!-- ... -->
-	<script type="text/javascript" src="bundle.js"></script><!-- ... -->
+	<script type="text/javascript" src="aframe-ammo-constraints.js"></script><!-- ... -->
+	<script type="text/javascript" src="aframe-gltf.js"></script><!-- ... -->
 </html>
