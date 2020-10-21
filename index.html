@@ -6,7 +6,7 @@
     <!--angle spawnpoint pointcloud gltf object-pool ADCONTROLLER gamepad vive gearvr-->
     	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>
 	<!--super hands-->	
-		<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+	<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
 	  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
 	  <script src="https://rawgit.com/wmurphyrd/aframe-super-hands-component/master/dist/super-hands.js"></script>
 			
@@ -17,14 +17,9 @@
 	<script type="text/javascript" src="aframe-extras-controls.js"></script><!-- ... -->
 	<script type="text/javascript" src="aframe-extras-loaders.min.js"></script><!-- ... -->	
 	<script type="text/javascript" src="aframe-extras.min.js"></script><!-- ... -->	
-
-	
-
 	<script type="text/javascript" src="aframe-spawnpoint-component.js"></script><!-- ... -->
 	<script type="text/javascript" src="super-hands.min.js"></script><!-- ... -->	
 	<script type="text/javascript" src="aframe-select-bar-component.js"></script><!-- ... -->	
-
-
 	<script type="text/javascript" src="bundle.js"></script><!-- ... -->
 	<script type="text/javascript" src="script.js"></script><!-- ... -->	
 	<script type="text/javascript" src="aframe-inspector.min.js"></script><!-- ... -->
@@ -40,15 +35,15 @@
   
   <!--UI STUFF (menus and triggers) -->
 	<script src="aframe-mouse-cursor-component.js"></script>
-    <script src="oculus-touch-controls.js"></script>
-    <script src="vive-controls.js"></script>
+    	<script src="oculus-touch-controls.js"></script>
+    	<script src="vive-controls.js"></script>
 	<script src="thumb-controls.js"></script>
-    <script src="aframe-physics-system.js"></script>
-    <script src="aframe-gui.js"></script>
+    	<script src="aframe-physics-system.js"></script>
+    	<script src="aframe-gui.js"></script>
 	<script src="aframe-super-shooter-kit.js"></script>
-    <script src="aframe-super-keyboard.js"></script>
+    	<script src="aframe-super-keyboard.js"></script>
 	<!--  -->
-    <script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
+    	<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
 	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
 			  
   	</head>
@@ -59,9 +54,15 @@
             <a-plane src="#floored" static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" ></a-plane>
             <a-sky color="#ECECEC"></a-sky>
 			
-			<a-assets>
-				<img id="floored" src="floored.PNG"></img>
-				<a-mixin id="cube" geometry="primitive: box; width: 1.0; height: 1.0; depth: 1.0"
+		<a-assets>
+			<img id="floored" src="floored.PNG"></img>
+			<a-mixin id="cube" geometry="primitive: box; width: 1.0; height: 1.0; depth: 1.0"
+                     hoverable grabbable stretchable draggable droppable
+                     event-set__hoveron="_event: hover-start; material.opacity: 0.7; transparent: true"
+                     event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
+                     dynamic-body shadow click-impulse>
+	            </a-mixin>
+		    <a-mixin id="sphere" geometry="primitive: sphere; rad: 1.0"
                      hoverable grabbable stretchable draggable droppable
                      event-set__hoveron="_event: hover-start; material.opacity: 0.7; transparent: true"
                      event-set__hoveroff="_event: hover-end; material.opacity: 1; transparent: false"
@@ -143,7 +144,7 @@
                            targetAxis: 0 1 0;
                            pivot: 0 0.1 0;
                            targetPivot: 0 -0.5 0;"></a-entity>
-							   <a-entity class="cube" mixin="cube" position="0 0 0" material="color: yellow"
+							   <a-entity class="sphere" mixin="sphere" position="0 0 0" material="color: yellow"
 	                      constraint="type: hinge;
 	                           target: #c11;
 	                           axis: 0 0 1;
