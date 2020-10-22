@@ -40,8 +40,8 @@
 	<script src="thumb-controls.js"></script>
     	<script src="aframe-physics-system.js"></script>
     	<script src="aframe-gui.js"></script>
-	<script src="aframe-super-shooter-kit.js"></script>
-    	<script src="aframe-super-keyboard.js"></script>
+	<script src="aframe-superHandsExtra.js"></script>
+    	<script src="aframe-tool-component.js"></script>
 	<!--  -->
     	<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
 	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
@@ -100,11 +100,19 @@
 	  
 		    <a-mixin id="red" material="color: red"></a-mixin>
 		    <a-mixin id="blue" material="color: blue"></a-mixin>
-		    <a-mixin id="cube" geometry="primitive: box"></a-mixin>
+		    <a-mixin id="cubed" geometry="primitive: box"></a-mixin>
 		    <a-mixin id="hinge-target" material="color: red"></a-mixin>
 		    <a-mixin id="constraint" material="color: blue"></a-mixin>
-		    <a-mixin id="weight" mass="2.0"></a-mixin>
+		    <a-mixin id="weight" mass="12.0"></a-mixin>
 		</a-assets>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
+			<a-entity mixin="red weight cube" position="0 3 0"></a-entity>
 			
 			
 			<!--<a-entity position="0 30 -0.5">
