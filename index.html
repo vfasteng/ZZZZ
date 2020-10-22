@@ -100,15 +100,14 @@
 		    <a-mixin id="constraint" material="color: blue"></a-mixin>
 		    <a-mixin id="weight" mass="12.0"></a-mixin>
 		</a-assets>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			<a-entity mixin="red weight cube controller" position="0 3 0" scale="5 5 5"></a-entity>
-			
+			<a-entity mixin="red weight cube controller" position="-15 5 -15" scale="5 5 5"></a-entity>
+			<a-entity mixin="blue weight cube controller" position="0 5 -15" scale="5 5 5"></a-entity>
+			<a-entity mixin="red weight cube controller" position="15 5 -15" scale="5 5 5"></a-entity>
+			<a-entity mixin="blue weight cube controller" position="-15 5 0" scale="5 5 5"></a-entity>
+			<a-entity mixin="red weight cube controller" position="15 5 0" scale="5 5 5"></a-entity>
+			<a-entity mixin="red weight cube controller" position="-15 5 15" scale="5 5 5"></a-entity>
+			<a-entity mixin="blue weight cube controller" position="0 5 15" scale="5 5 5"></a-entity>
+			<a-entity mixin="red weight cube controller" position="15 5 15" scale="5 5 5"></a-entity>
 			
 			<!--<a-entity position="0 30 -0.5">
 		        <a-plane width="50" height="50">
@@ -155,7 +154,7 @@
 			</a-entity><!-- use constraint mixins -->
             
 			<!-- HINGE PIN working with 2 z-axis wheels-->
-        <a-entity position="0 5 -5">
+        <a-entity position="0 5 0">
 
             <a-cylinder id="hinge3-target" position="0 0.1 0 " color="#777" dynamic-body radius="0.5" height="0.1">
 
