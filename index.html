@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+        <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
-    <!--angle spawnpoint pointcloud gltf object-pool ADCONTROLLER gamepad vive gearvr-->
-    	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>
-	<!--super hands-->	
+    	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>	
 	<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
-	  <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
-	  <script src="https://rawgit.com/wmurphyrd/aframe-super-hands-component/master/dist/super-hands.js"></script>
-			
+	<script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
+	<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
+	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+	
 	<script type="text/javascript" src="aframe-pointcloud-component.js"></script><!-- ... -->
 	<script type="text/javascript" src="aframe-heightgrid-component.min.js"></script><!-- ... -->	
 	<script type="text/javascript" src="aframe-extras.misc.min.js"></script><!-- ... -->	
-
 	<script type="text/javascript" src="aframe-extras-controls.js"></script><!-- ... -->
 	<script type="text/javascript" src="aframe-extras-loaders.min.js"></script><!-- ... -->	
 	<script type="text/javascript" src="aframe-extras.min.js"></script><!-- ... -->	
@@ -26,13 +24,19 @@
 	
 	<link rel="stylesheet" type="text/css" href="aframe.css">
 	
-	<script src="../../js/vendor/LegacyJSONLoader.js"></script>
-    <script src="components/aabb-collider.js"></script>
-    <script src="components/grab.js"></script>
-    <script src="components/ground.js"></script>
-    <script src="shaders/skyGradient.js"></script>
-    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
-  
+	<script src="LegacyJSONLoader.js"></script>
+	    <script src="aabb-collider.js"></script>
+	    <script src="grab.js"></script>
+	    <script src="grabbable.js"></script>
+	    <script src="clickable.js"></script>
+	    <script src="draggable.js"></script>
+	    <script src="drag-droppable.js"></script>
+	    <script src="dropable.js"></script>
+	    
+	    <script src="components/ground.js"></script>
+	    <script src="shaders/skyGradient.js"></script>
+	    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
+
   <!--UI STUFF (menus and triggers) -->
 	<script src="aframe-mouse-cursor-component.js"></script>
     	<script src="oculus-touch-controls.js"></script>
@@ -43,8 +47,8 @@
 	<script src="aframe-superHandsExtra.js"></script>
     	<script src="aframe-tool-component.js"></script>
 	<!--  -->
-    	<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
-	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
+    	
+	    
 	<style>
     .button:hover {
       background-color: #fff;
