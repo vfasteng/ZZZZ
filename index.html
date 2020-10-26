@@ -3,8 +3,7 @@
     <head>
         <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v3.13.1/dist/aframe-extras.min.js"></script>
-    	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>	
-	<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+    	<script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@333873f3279c8d49881577662e16e51baa480ea3/dist/aframe-master.min.js"></script>
 	<script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v4.1.2/dist/aframe-extras.min.js"></script>
 	<script src="https://rawgit.com/rdub80/aframe-gui/master/dist/aframe-gui.min.js" ></script>
 	<script src="https://unpkg.com/aframe-thumb-controls-component@1.1.0/dist/aframe-thumb-controls-component.min.js"></script>
@@ -87,7 +86,7 @@
         <button id="export-scene" class="button"><span>Export GLTF</span></button>
         <button id="export-scene-bin" class="button"><span>Binary</span></button>
       </div>	  
-	    <a-scene gltf-exporter>
+	    <a-scene>
             <!--Build our background and our floor-->
             <a-plane src="#floored" static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" ></a-plane>
             <a-sky color="#ECECEC"></a-sky>
