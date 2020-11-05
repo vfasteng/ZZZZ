@@ -24,27 +24,31 @@
 	<link rel="stylesheet" type="text/css" href="aframe.css">
 	
 	<script src="LegacyJSONLoader.js"></script>
-	    <script src="aabb-collider.js"></script>
-	    <script src="grab.js"></script>
-	    <script src="grabbable.js"></script>
-	    <script src="clickable.js"></script>
-	    <script src="draggable.js"></script>
-	    <script src="drag-droppable.js"></script>
-	    <script src="dropable.js"></script>
+	<script src="aabb-collider.js"></script>
+	<script src="grab.js"></script>
+	<script src="grabbable.js"></script>
+	<script src="clickable.js"></script>
+	<script src="draggable.js"></script>
+	<script src="drag-droppable.js"></script>
+	<script src="dropable.js"></script>
 	    
-	    <script src="components/ground.js"></script>
-	    <script src="shaders/skyGradient.js"></script>
-	    <script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
+	<script src="components/ground.js"></script>
+	<script src="shaders/skyGradient.js"></script>
+	<script src="https://unpkg.com/aframe-event-set-component@4.0.1/dist/aframe-event-set-component.min.js"></script>
 
-  <!--UI STUFF (menus and triggers) -->
+        <!--UI STUFF (menus and triggers) -->
 	<script src="aframe-mouse-cursor-component.js"></script>
     	<script src="oculus-touch-controls.js"></script>
     	<script src="vive-controls.js"></script>
+	
+	<script src="aframe-superHandsExtra.js"></script>
+	<script src="aframe-tool-component.js"></script>
 	<script src="thumb-controls.js"></script>
     	<script src="aframe-physics-system.js"></script>
     	<script src="aframe-gui.js"></script>
-	<script src="aframe-superHandsExtra.js"></script>
-    	<script src="aframe-tool-component.js"></script>
+	    
+	    
+	    
 	<!--  -->
     	
 	    
@@ -87,9 +91,9 @@
         <button id="export-scene-bin" class="button"><span>Binary</span></button>
       </div>	  
 	    <a-scene>
-            <!--Build our background and our floor-->
+            <!--Build our background and our floor--
             <a-plane src="#floored" static-body position="0 0 -4" rotation="-90 0 0" width="100" height="100" ></a-plane>
-            <a-sky color="#ECECEC"></a-sky>
+            <a-sky color="#ECECEC"></a-sky>-->
 			
 		<a-assets>
 			<img id="floored" src="floored.PNG"></img>
@@ -137,7 +141,7 @@
                               colliderEndEventProperty: clearedEls;
                               grabStartButtons: gripdown, pointdown, triggerdown;
                               grabEndButtons: gripup, pointup, triggerup" static-body="shape: sphere; sphereRadius: 0.11" oculus-touch-controls="hand: left" physics-collider collision-filter="collidesWith: default;" collisionForces="false">
-            </a-mixin>
+            			</a-mixin>
 	  
 		    <a-mixin id="red" material="color: red"></a-mixin>
 		    <a-mixin id="blue" material="color: blue"></a-mixin>
@@ -171,7 +175,7 @@
 					<a-gui-circle-timer></a-gui-circle-timer>
 				</a-plane>
 			</a-entity>
-        <!-- Environment --
+        <!-- Environment -->
         <a-entity id="sky"
                   geometry="primitive: sphere; radius: 65;"
                   material="shader: skyGradient; colorTop: #353449; colorBottom: #BC483E; side: back"></a-entity>
@@ -231,7 +235,7 @@
         </a-entity>
 			
             <!--Build three obstacles as static bodies so we can stand on them-->
-            <a-box dynamic-body position="-2 7 0" rotation="30 45 30" color="#4CC3D9" scale="5 5 5"
+            <a-box dynamic-body click-impulse grab position="-2 7 0" rotation="30 45 30" color="#4CC3D9" scale="5 5 5"
 			clickable
 			draggable
 			droppable
